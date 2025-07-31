@@ -38,11 +38,27 @@ export const updateSearchCount = async (query: string, movie: Movie) => {
         title: movie.title,
       });
     }
-    console.log(result);
+    // console.log(result);
     // if a document is found increment the searchCount field
     // if no  document is found then create a new document in appwrite database -> 1
   } catch (error) {
     console.log(error);
     throw error;
+  }
+};
+
+export const getTrendingMovies = async (): Promise<
+  TrendingMovie[] | undefined
+> => {
+  try {
+    const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
+      Query.limit(5),
+      Query.orderDesc("count"),
+    ]);
+
+    return result.documents as unknown as TrendingMovie[];
+  } catch (error) {
+    console.log(error);
+    return undefined;
   }
 };
